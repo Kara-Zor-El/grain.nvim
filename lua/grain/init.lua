@@ -91,6 +91,23 @@ local function setup_lsp(lsp_opts)
     )
     return
   end
+  local cmd = lsp_opts.cmd
+  if type(cmd) ~= "table" or cmd[1] == nil or cmd[1] == "" then
+    vim.notify_once(
+      "[grain.nvim] Invalid LSP cmd; skipping LSP setup.",
+      vim.log.levels.WARN
+    )
+    return
+  end
+  if vim.fn.executable(cmd[1]) ~= 1 then
+    vim.notify_once(
+      "[grain.nvim] Grain executable not found ("
+        .. cmd[1]
+        .. "). Install from https://grain-lang.org/",
+      vim.log.levels.WARN
+    )
+    return
+  end
   if not configs.grain then
     configs.grain = {
       default_config = vim.deepcopy(lsp_opts),
