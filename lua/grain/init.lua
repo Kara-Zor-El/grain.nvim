@@ -23,6 +23,7 @@ local defaults = {
   enable_lsp = true,
   lsp = {
     cmd = { "grain", "lsp" },
+    flags = {},
     filetypes = { "grain" },
     root_dir = default_grain_root_dir,
     single_file_support = true,
@@ -91,14 +92,19 @@ local function setup_lsp(lsp_opts)
     )
     return
   end
-  local cmd = lsp_opts.cmd
-  if type(cmd) ~= "table" or cmd[1] == nil or cmd[1] == "" then
+  local base_cmd = lsp_opts.cmd
+  if type(base_cmd) ~= "table" or base_cmd[1] == nil or base_cmd[1] == "" then
     vim.notify_once(
       "[grain.nvim] Invalid LSP cmd; skipping LSP setup.",
       vim.log.levels.WARN
     )
     return
   end
+  local flags = lsp_opts.flags
+  if type(flags) ~= "table" then
+    flags = {}
+  end
+  local cmd = vim.list_extend(vim.deepcopy(base_cmd), flags)
   if vim.fn.executable(cmd[1]) ~= 1 then
     vim.notify_once(
       "[grain.nvim] Grain executable not found ("
@@ -108,12 +114,15 @@ local function setup_lsp(lsp_opts)
     )
     return
   end
+  local lsp_config = vim.deepcopy(lsp_opts)
+  lsp_config.flags = nil
+  lsp_config.cmd = cmd
   if not configs.grain then
     configs.grain = {
-      default_config = vim.deepcopy(lsp_opts),
+      default_config = vim.deepcopy(lsp_config),
     }
   end
-  lspconfig.grain.setup(lsp_opts)
+  lspconfig.grain.setup(lsp_config)
 end
 
 function M.setup(opts)

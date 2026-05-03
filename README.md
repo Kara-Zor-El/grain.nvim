@@ -21,7 +21,7 @@ Neovim support for [Grain](https://grain-lang.org/)
   },
   opts = {
     -- auto_install_parser = true, -- optional: install parser on startup
-    -- lsp = { cmd = { "/path/to/grain", "lsp" } },
+    -- lsp = { cmd = { "/path/to/grain", "lsp" }, flags = { "--your-flag" } },
   },
   config = function(_, opts)
     require("grain").setup(opts)
@@ -39,5 +39,5 @@ After install, run `:TSInstall grain` once (unless you set `auto_install_parser 
 | `treesitter.parser` | `"grain"` | Parser name for nvim-treesitter |
 | `treesitter.install_info` | Kara-Zor-El/tree-sitter-grain `main`, `queries` | Custom parser `install_info` |
 | `enable_lsp` | `true` | Register and start `lspconfig.grain` |
-| `lsp` | `grain lsp`, `root_dir` = buffer’s directory (or cwd), `single_file_support` | Merged into `lspconfig.grain.setup` (no `root_markers` by default) |
+| `lsp` | `cmd = { "grain", "lsp" }`, `flags = {}`, `root_dir` = buffer’s directory (or cwd), `single_file_support` | Merged into `lspconfig.grain.setup` (no `root_markers` by default). `flags` are appended after `cmd` |
 | `auto_install_parser` | `false` | Call nvim-treesitter install for `grain` after setup |
